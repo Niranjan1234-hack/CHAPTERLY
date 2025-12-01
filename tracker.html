@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapterly</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel= "icon" type= "image/png" href = icon.png>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .book-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        .dark-mode {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .dark-mode .bg-white {
+            background-color: #2d3748 !important;
+            color: #e2e8f0 !important;
+        }
+        .dark-mode .bg-gray-100 {
+            background-color: #2d3748 !important;
+        }
+        .dark-mode .text-gray-800 {
+            color: #e2e8f0 !important;
+        }
+        .dark-mode .border {
+            border-color: #4a5568 !important;
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col transition-colors duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <img src="icon.png" alt="Chapterly Logo" class="h-10 w-10 mr-3">
+                    <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Chapterly
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div id="welcomeMessage" class="hidden md:flex items-center text-xl md:text-2xl font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 px-6 py-3 rounded-xl shadow-sm">
+                        <i class="fas fa-user-circle mr-3 text-2xl"></i>
+                        <span>Welcome, <span id="userName" class="text-indigo-800 dark:text-indigo-200">adhi</span>!</span>
+                    </div>
+                    <button id="addBookBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                        <i class="fas fa-plus mr-2"></i>Add Book
+                    </button>
+                    <a href="index.html" class="p-2 text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 transition-colors" title="Logout">
+                        <i class="fas fa-sign-out-alt text-xl"></i>
+                    </a>
+                    <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon text-gray-800 dark:text-yellow-300"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+
+        <!-- Search Bar -->
+        <div class="flex flex-col md:flex-row justify-center items-center mb-12 gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+            <div class="relative w-full max-w-2xl">
+                <input type="text" id="searchInput" placeholder="Search by title or author..." 
+                       class="w-full px-4 pl-10 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200">
+                <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+            </div>
+        </div>
+
+        <!-- Add Book Modal -->
+        <div id="addBookModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 slide-in">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Add New Book</h2>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <form id="bookForm" class="space-y-4">
+                    <div>
+                        <label for="bookTitle" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Book Title</label>
+                        <input type="text" id="bookTitle" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    <div>
+                        <label for="bookAuthor" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Author</label>
+                        <input type="text" id="bookAuthor" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    <div>
+                        <label for="totalPages" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Pages</label>
+                        <input type="number" id="totalPages" min="1" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    <div>
+                        <label for="bookStatus" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+                        <select id="bookStatus" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="to-read">Want to Read</option>
+                            <option value="reading">Currently Reading</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div id="currentPageContainer" class="hidden">
+                        <label for="currentPage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Page</label>
+                        <input type="number" id="currentPage" min="0"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-2">
+                        <button type="button" id="cancelBtn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            Add Book
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Book Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <!-- To Read Column -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Want to Read</h2>
+                <div id="to-read" class="space-y-4 min-h-[200px]" data-status="to-read">
+                    <!-- Books will be added here dynamically -->
+                    <p class="text-gray-500 text-center py-8">No books to read yet. Add some books!</p>
+                </div>
+            </div>
+
+            <!-- Reading Now Column -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Reading Now</h2>
+                <div id="reading-now" class="space-y-4 min-h-[200px]" data-status="reading">
+                    <!-- Books will be added here dynamically -->
+                    <p class="text-gray-500 text-center py-8">You're not reading any books right now.</p>
+                </div>
+            </div>
+
+            <!-- Completed Column -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Completed</h2>
+                <div id="completed" class="space-y-4 min-h-[200px]" data-status="completed">
+                    <!-- Books will be added here dynamically -->
+                    <p class="text-gray-500 text-center py-8">No books completed yet.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">Chapterly</h2>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Your personal reading companion</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-700 mt-6 pt-6 text-center md:text-left">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    &copy; <span id="currentYear"></span> Chapterly. All rights reserved. 
+                    
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const addBookBtn = document.getElementById('addBookBtn');
+        const addBookModal = document.getElementById('addBookModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const bookForm = document.getElementById('bookForm');
+        const searchInput = document.getElementById('searchInput');
+        const bookStatus = document.getElementById('bookStatus');
+        const currentPageContainer = document.getElementById('currentPageContainer');
+        
+        // State
+        let books = JSON.parse(localStorage.getItem('books')) || [];
+        let isDarkMode = localStorage.getItem('darkMode') === 'true' || 
+                        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        // Initialize
+        function init() {
+            applyTheme();
+            renderBooks();
+            setupEventListeners();
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            themeToggle.addEventListener('click', toggleTheme);
+            addBookBtn.addEventListener('click', () => toggleModal(true));
+            closeModal.addEventListener('click', () => toggleModal(false));
+            cancelBtn.addEventListener('click', () => toggleModal(false));
+            bookForm.addEventListener('submit', handleAddBook);
+            searchInput.addEventListener('input', handleSearch);
+            bookStatus.addEventListener('change', toggleCurrentPageField);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === addBookModal) {
+                    toggleModal(false);
+                }
+            });
+        }
+
+        // Theme Functions
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            applyTheme();
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        function applyTheme() {
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            const icon = themeToggle.querySelector('i');
+            if (isDarkMode) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Modal Functions
+        function toggleModal(show) {
+            if (show) {
+                addBookModal.classList.remove('hidden');
+                bookForm.reset();
+                toggleCurrentPageField();
+                document.getElementById('bookTitle').focus();
+            } else {
+                addBookModal.classList.add('hidden');
+            }
+        }
+
+        function toggleCurrentPageField() {
+            const status = bookStatus.value;
+            currentPageContainer.classList.toggle('hidden', status !== 'reading' && status !== 'completed');
+            
+            const currentPageInput = document.getElementById('currentPage');
+            const totalPagesInput = document.getElementById('totalPages');
+            
+            if (status === 'completed') {
+                currentPageInput.required = true;
+                currentPageInput.max = totalPagesInput.value;
+                currentPageInput.value = totalPagesInput.value;
+            } else if (status === 'reading') {
+                currentPageInput.required = true;
+                currentPageInput.max = totalPagesInput.value;
+                currentPageInput.value = '0';
+            } else {
+                currentPageInput.required = false;
+                currentPageInput.value = '0';
+            }
+        }
+
+        // Book Functions
+        function handleAddBook(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('bookTitle').value.trim();
+            const author = document.getElementById('bookAuthor').value.trim();
+            const totalPages = parseInt(document.getElementById('totalPages').value);
+            const status = document.getElementById('bookStatus').value;
+            let currentPage = 0;
+            
+            if (status === 'reading' || status === 'completed') {
+                currentPage = parseInt(document.getElementById('currentPage').value) || 0;
+            }
+            
+            if (status === 'completed') {
+                currentPage = totalPages; // Ensure completed books show 100%
+            }
+            
+            const book = {
+                id: Date.now().toString(),
+                title,
+                author,
+                totalPages,
+                currentPage,
+                status,
+                dateAdded: new Date().toISOString()
+            };
+            
+            books.push(book);
+            saveBooks();
+            renderBooks();
+            toggleModal(false);
+        }
+
+        function updateBookProgress(bookId, newPage) {
+            const book = books.find(b => b.id === bookId);
+            if (book) {
+                book.currentPage = Math.min(parseInt(newPage), book.totalPages);
+                
+                // Update status based on progress
+                if (book.currentPage >= book.totalPages) {
+                    book.status = 'completed';
+                    book.currentPage = book.totalPages; // Ensure 100% completion
+                } else if (book.currentPage > 0 && book.status === 'to-read') {
+                    book.status = 'reading';
+                }
+                
+                saveBooks();
+                renderBooks();
+            }
+        }
+
+        function updateBookStatus(bookId, newStatus) {
+            const book = books.find(b => b.id === bookId);
+            if (book) {
+                book.status = newStatus;
+                
+                // If marking as completed, set current page to total pages
+                if (newStatus === 'completed') {
+                    book.currentPage = book.totalPages;
+                } else if (newStatus === 'to-read') {
+                    book.currentPage = 0;
+                }
+                
+                saveBooks();
+                renderBooks();
+            }
+        }
+
+        function deleteBook(bookId) {
+            if (confirm('Are you sure you want to delete this book?')) {
+                books = books.filter(book => book.id !== bookId);
+                saveBooks();
+                renderBooks();
+            }
+        }
+
+        function saveBooks() {
+            localStorage.setItem('books', JSON.stringify(books));
+        }
+
+        // Render Functions
+        function renderBooks(filter = '') {
+            const filteredBooks = filter
+                ? books.filter(book => 
+                    book.title.toLowerCase().includes(filter.toLowerCase()) ||
+                    book.author.toLowerCase().includes(filter.toLowerCase()))
+                : books;
+            
+            // Clear all columns
+            document.querySelectorAll('[data-status]').forEach(column => {
+                const status = column.getAttribute('data-status');
+                const statusBooks = filteredBooks.filter(book => book.status === status);
+                
+                if (statusBooks.length === 0) {
+                    column.innerHTML = `
+                        <p class="text-gray-500 text-center py-8">
+                            ${getEmptyStateMessage(status, filter)}
+                        </p>`;
+                    return;
+                }
+                
+                column.innerHTML = statusBooks.map(book => createBookCard(book)).join('');
+            });
+            
+            // Add event listeners to all sliders
+            document.querySelectorAll('.page-slider').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    const bookId = this.getAttribute('data-book-id');
+                    const currentPage = this.value;
+                    const currentPageDisplay = this.nextElementSibling;
+                    currentPageDisplay.textContent = `${currentPage} / ${this.max}`;
+                    
+                    // Update the book's current page
+                    updateBookProgress(bookId, currentPage);
+                });
+            });
+            
+            // Add event listeners to all status dropdowns
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const bookId = this.getAttribute('data-book-id');
+                    const newStatus = this.value;
+                    updateBookStatus(bookId, newStatus);
+                });
+            });
+            
+            // Add event listeners to all delete buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const bookId = this.getAttribute('data-book-id');
+                    deleteBook(bookId);
+                });
+            });
+        }
+
+        function createBookCard(book) {
+            const progress = Math.min(Math.round((book.currentPage / book.totalPages) * 100), 100);
+            
+            return `
+                <div class="book-card bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800 dark:text-white">${book.title}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">${book.author}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select class="status-select text-xs p-1 border rounded bg-white dark:bg-gray-600 dark:text-white dark:border-gray-500" data-book-id="${book.id}">
+                                <option value="to-read" ${book.status === 'to-read' ? 'selected' : ''}>To Read</option>
+                                <option value="reading" ${book.status === 'reading' ? 'selected' : ''}>Reading</option>
+                                <option value="completed" ${book.status === 'completed' ? 'selected' : ''}>Completed</option>
+                            </select>
+                            <button class="delete-btn text-red-500 hover:text-red-700" data-book-id="${book.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    ${book.status !== 'to-read' ? `
+                        <div class="mt-3">
+                            <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
+                                <span>Progress</span>
+                                <span>${progress}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-indigo-600 h-2 rounded-full" style="width: ${progress}%"></div>
+                            </div>
+                            
+                            ${book.status === 'reading' ? `
+                                <div class="mt-3">
+                                    <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
+                                        <span>Pages</span>
+                                        <span class="current-page">${book.currentPage} / ${book.totalPages}</span>
+                                    </div>
+                                    <input type="range" 
+                                           min="0" 
+                                           max="${book.totalPages}" 
+                                           value="${book.currentPage}" 
+                                           class="w-full page-slider"
+                                           data-book-id="${book.id}">
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 text-xs text-gray-500 dark:text-gray-400">
+                        Added: ${new Date(book.dateAdded).toLocaleDateString()}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getEmptyStateMessage(status, filter) {
+            if (filter) {
+                return 'No matching books found in this category.';
+            }
+            
+            switch (status) {
+                case 'to-read':
+                    return 'No books to read yet. Add some books!';
+                case 'reading':
+                    return 'You\'re not reading any books right now.';
+                case 'completed':
+                    return 'No books completed yet.';
+                default:
+                    return 'No books found.';
+            }
+        }
+
+        // Search Functionality
+        function handleSearch() {
+            const searchTerm = searchInput.value.trim();
+            renderBooks(searchTerm);
+        }
+
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Display user's name if logged in
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const userNameElement = document.getElementById('userName');
+            
+            if (currentUser && currentUser.name) {
+                userNameElement.textContent = currentUser.name;
+            } else {
+                // If not logged in, redirect to index.html
+                window.location.href = 'index.html';
+            }
+            
+            // Initialize the rest of the app
+            init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --primary: #1abc9c;
+    --primary-dark: #16a085;
+    --secondary: #2c3e50;
+    --white: #fff;
+    --black: #333;
+    --gray: #aaa;
+    --light-gray: #f5f5f5;
+    --dark-overlay: rgba(0, 0, 0, 0.7);
+    --transition: all 0.3s ease;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-gray);
+    padding: 30px;
+}
+
+.container {
+    position: relative;
+    max-width: 850px;
+    width: 100%;
+    background: var(--white);
+    padding: 40px 30px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.container .forms {
+    height: 100%;
+    width: 100%;
+    background: var(--white);
+}
+
+.container .form-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form-content .login-form,
+.form-content .signup-form {
+    width: calc(100% / 2 - 25px);
+}
+
+.forms .form-content .title {
+    position: relative;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.forms .form-content .title:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 25px;
+    background: var(--primary);
+    border-radius: 25px;
+}
+
+.forms .form-content .input-boxes {
+    margin-top: 30px;
+}
+
+.forms .form-content .input-box {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    margin: 10px 0;
+    position: relative;
+}
+
+.form-content .input-box input {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    padding: 0 30px 0 45px;
+    font-size: 16px;
+    font-weight: 500;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+}
+
+.form-content .input-box input:focus,
+.form-content .input-box input:valid {
+    border-color: var(--primary);
+}
+
+.form-content .input-box i {
+    position: absolute;
+    color: var(--primary);
+    font-size: 17px;
+    left: 15px;
+}
+
+.forms .form-content .text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.forms .form-content .text a {
+    text-decoration: none;
+    color: var(--primary);
+}
+
+.forms .form-content .text a:hover {
+    text-decoration: underline;
+}
+
+.forms .form-content .button {
+    color: var(--white);
+    margin-top: 40px;
+}
+
+.forms .form-content .button input {
+    color: var(--white);
+    background: var(--primary);
+    border-radius: 6px;
+    padding: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.forms .form-content .button input:hover {
+    background: var(--primary-dark);
+}
+
+.forms .form-content label {
+    color: var(--gray);
+    cursor: pointer;
+}
+
+.forms .form-content label:hover {
+    text-decoration: underline;
+}
+
+.forms .form-content .login-text,
+.forms .form-content .sign-up-text {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.container #flip {
+    display: none;
+}
+
+/* New Styles for Modern Design */
+.forms-container {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition: var(--transition);
+    z-index: 2;
+}
+
+.signin-signup {
+    position: absolute;
+    top: 50%;
+    left: 75%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    display: grid;
+    grid-template-columns: 1fr;
+    z-index: 5;
+    transition: var(--transition);
+}
+
+form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 5rem;
+    overflow: hidden;
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    transition: var(--transition);
+}
+
+form.sign-in-form {
+    z-index: 2;
+}
+
+form.sign-up-form {
+    z-index: 1;
+    opacity: 0;
+}
+
+.title {
+    font-size: 2.2rem;
+    color: var(--secondary);
+    margin-bottom: 10px;
+}
+
+.input-field {
+    max-width: 380px;
+    width: 100%;
+    height: 55px;
+    background-color: var(--light-gray);
+    margin: 10px 0;
+    border-radius: 55px;
+    display: grid;
+    grid-template-columns: 15% 85%;
+    padding: 0 0.4rem;
+    position: relative;
+    transition: var(--transition);
+}
+
+.input-field i {
+    text-align: center;
+    line-height: 55px;
+    color: var(--gray);
+    font-size: 1.1rem;
+}
+
+.input-field input {
+    background: none;
+    outline: none;
+    border: none;
+    line-height: 1;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--black);
+    width: 100%;
+}
+
+.input-field input::placeholder {
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.btn {
+    width: 150px;
+    height: 49px;
+    border: none;
+    outline: none;
+    border-radius: 49px;
+    cursor: pointer;
+    background-color: var(--primary);
+    color: var(--white);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 10px 0;
+    transition: var(--transition);
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn.transparent {
+    margin: 0;
+    background: none;
+    border: 2px solid var(--white);
+    width: 130px;
+    height: 41px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.panels-container {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    z-index: 1;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-around;
+    text-align: center;
+    z-index: 2;
+    pointer-events: all;
+    padding: 3rem 17% 2rem 12%;
+}
+
+.left-panel {
+    pointer-events: none;
+    padding: 3rem 17% 2rem 12%;
+}
+
+.right-panel {
+    pointer-events: none;
+    padding: 3rem 12% 2rem 17%;
+}
+
+.panel .content {
+    color: var(--white);
+    transition: var(--transition);
+}
+
+.panel h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.panel p {
+    font-size: 0.95rem;
+    padding: 0.7rem 0;
+}
+
+.image {
+    width: 100%;
+    transition: var(--transition);
+}
+
+.left-panel .image,
+.left-panel .content {
+    transform: translateX(-200%);
+}
+
+.right-panel .image,
+.right-panel .content {
+    transform: translateX(0);
+}
+
+/* Animation */
+.container.sign-up-mode:before {
+    transform: translate(100%, -50%);
+    right: 50%;
+}
+
+.container.sign-up-mode .left-panel .image,
+.container.sign-up-mode .left-panel .content {
+    transform: translateX(0);
+}
+
+.container.sign-up-mode .right-panel .image,
+.container.sign-up-mode .right-panel .content {
+    transform: translateX(200%);
+}
+
+.container.sign-up-mode .left-panel {
+    pointer-events: all;
+}
+
+.container.sign-up-mode .right-panel {
+    pointer-events: none;
+}
+
+.container.sign-up-mode .signin-signup {
+    left: 25%;
+}
+
+.container.sign-up-mode form.sign-in-form {
+    z-index: 1;
+    opacity: 0;
+}
+
+.container.sign-up-mode form.sign-up-form {
+    z-index: 2;
+    opacity: 1;
+}
+
+/* Social Icons */
+.social-text {
+    padding: 0.7rem 0;
+    font-size: 1rem;
+    color: var(--gray);
+}
+
+.social-media {
+    display: flex;
+    justify-content: center;
+}
+
+.social-icon {
+    height: 46px;
+    width: 46px;
+    border: 1px solid var(--gray);
+    margin: 0 0.45rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: var(--gray);
+    font-size: 1.1rem;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.social-icon:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--white);
+    color: var(--black);
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast.error {
+    background-color: #ffebee;
+    color: #c62828;
+    border-left: 4px solid #c62828;
+}
+
+.toast.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 870px) {
+    .container {
+        min-height: 800px;
+        height: 100vh;
+    }
+
+    .panels-container {
+        display: none;
+    }
+
+    .signin-signup {
+        width: 100%;
+        left: 50%;
+    }
+
+    .forms-container {
+        width: 100%;
+    }
+
+    .container.sign-up-mode .signin-signup {
+        left: 50%;
+    }
+}
+
+@media (max-width: 570px) {
+    form {
+        padding: 0 1.5rem;
+    }
+
+    .image {
+        display: none;
+    }
+
+    .panel .content {
+        padding: 0.5rem 1rem;
+    }
+
+    .container {
+        padding: 1.5rem;
+    }
+}
+
+/* Background Animation */
+.container::before {
+    content: '';
+    position: absolute;
+    width: 2000px;
+    height: 2000px;
+    border-radius: 50%;
+    background: linear-gradient(-45deg, var(--primary), var(--primary-dark));
+    top: -10%;
+    right: 48%;
+    transform: translateY(-50%);
+    z-index: 1;
+    transition: var(--transition);
+}
+
+.container.sign-up-mode::before {
+    transform: translate(100%, -50%);
+    right: 50%;
+}
